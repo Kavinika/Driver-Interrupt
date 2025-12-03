@@ -20,9 +20,7 @@ jobs:
         run: |
           wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc8-v3.10-full-install-linux-x64-installer.run -O xc8.run
           chmod +x xc8.run
-      
-      - name: Install xc8 compiler
-        run: sudo ./xc8.run --mode unattended --unattendedmodeui none --netservername none
+          sudo ./xc8.run --mode unattended --unattendedmodeui none --netservername none
 
       - name: Locate XC8 installation
         run: sudo find /opt/microchip -maxdepth 5 -type f -name "xc8-cc" -print || true
