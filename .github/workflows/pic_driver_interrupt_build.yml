@@ -41,15 +41,8 @@ jobs:
 
       - name: Build Firmware
         run: |
-          make clean FIXDEP=echo \
-            MP_CC=xc8-cc \
-            MP_AS=pic-as \
-            DFP_DIR=$HOME/.mchp_packs/PIC16Fxxx_DFP
-
-          make all FIXDEP=echo \
-            MP_CC=xc8-cc \
-            MP_AS=pic-as \
-            DFP_DIR=$HOME/.mchp_packs/PIC16Fxxx_DFP
+          make clean FIXDEP=echo MP_CC=xc8-cc MP_AS=pic-as DFP_DIR=$HOME/.mchp_packs/PIC16Fxxx_DFP
+          make all   FIXDEP=echo MP_CC=xc8-cc MP_AS=pic-as DFP_DIR=$HOME/.mchp_packs/PIC16Fxxx_DFP
 
       - name: list dist folder
         run: ls -R dist || true
