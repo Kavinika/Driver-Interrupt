@@ -1,0 +1,61 @@
+name: PIC Uart Driver interrupt CI (XC8)
+
+on:
+  push:
+    branches: ["main"]
+  pull_requests:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build PIC uart Driver Interrupt (XC8)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout source
+        uses: actions/checkout@v4
+
+      - name: Download xc8 compiler
+        run: |
+          wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc8-v3.10-full-install-linux-x64-installer.run -O xc8.run
+          chmod +x xc8.run
+      - name: Install xc8 compiler
+        run: sudo ./xc8.run --mode unattended --unattendedmodeui none --netservername none
+
+      - name: Add XC8 to PATH
+        run: echo "/opt/microchip/xc8/v3.10/bin", >> $GITHUB_PATH
+
+      - name: Verify XC8 tools
+        run: |
+          which xc8-cc || true
+          xc8-cc --version || true
+          which pic-as || true
+
+      - name: Install PIC16F DFP Pack
+        run: |
+          mkdir -p $HOME/.mchp_packs
+          cd $HOME/.mchp_packs
+          wget https://packs.download.microchip.com/Microchip.PIC16Fxxx_DFP.1.2.33.atpack -O pack.atpack
+          unzip -o pack.atpack -d PIC16Fxxx_DFP
+
+      - name: Build Firmware
+        run: |
+          make clean FIXDEP=echo \
+            MP_CC=xc8-cc \
+            MP_AS=pic-as \
+            DFP_DIR=$HOME/.mchp_packs/PIC16Fxxx_DFP
+
+          make all FIXDEP=echo \
+            MP_CC=xc8-cc \
+            MP_AS=pic-as \
+            DFP_DIR=$HOME/.mchp_packs/PIC16Fxxx_DFP
+
+      - name: list dist folder
+        run: ls -R dist || true
+
+      - name: upload HEX Artifact
+        uses: actions/upload_artifact@v4
+        with:
+          name: pic-driver-interrupt-output
+          path: dist/**/production/*.hex
