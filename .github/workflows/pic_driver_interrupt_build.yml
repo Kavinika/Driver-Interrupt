@@ -24,6 +24,10 @@ jobs:
       - name: Install xc8 compiler
         run: sudo ./xc8.run --mode unattended --unattendedmodeui none --netservername none
 
+      - name: Locate XC8 installation
+        run: sudo find /opt/microchip -maxdepth 5 -type f -name "xc8-cc" -print || true
+        /opt/microchip/xc8/v3.10/bin/xc8-cc
+
       - name: Add XC8 to PATH
         run: echo "/opt/microchip/xc8/v3.10/bin", >> $GITHUB_PATH
 
